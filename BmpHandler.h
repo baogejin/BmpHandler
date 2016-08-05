@@ -2,46 +2,47 @@
 #define BMPHANDLER_H_INCLUDED
 
 //------------------------------------------------------------
-//Í·ÎÄ¼ş
+//å¤´æ–‡ä»¶
 #include<stdio.h>
 #include<windows.h>
-#include<wingdi.h>//Õâ¸öÇ°Ãæ±ØĞëinclude<windows.h>£¬·ñÔò±¨´í
+#include<wingdi.h>//è¿™ä¸ªå‰é¢å¿…é¡»include<windows.h>ï¼Œå¦åˆ™æŠ¥é”™
 
 //------------------------------------------------------------
-//CBmpHandlerÀà
+//CBmpHandlerç±»
 class CBmpHandler
 {
 private:
-    //Í¼ÏñÊı¾İ
-    int m_iBmpWidth;//Í¼ÏñµÄ¿í
-    int m_iBmpHeight;//Í¼ÏñµÄ¸ß
-    int m_iBitCount;//Í¼ÏñÀàĞÍ£¬Ã¿ÏñËØÎ»Êı
-    int m_iLineSize;//Í¼ÏñÃ¿ĞĞµÄ×Ö½ÚÊı
-    RGBQUAD* m_stColorTable;//ÑÕÉ«±íÖ¸Õë
-    unsigned char* m_szBmpBuf;//Í¼ÏñÊı¾İµÄÖ¸Õë
+    //å›¾åƒæ•°æ®
+    int m_iBmpWidth;//å›¾åƒçš„å®½
+    int m_iBmpHeight;//å›¾åƒçš„é«˜
+    int m_iBitCount;//å›¾åƒç±»å‹ï¼Œæ¯åƒç´ ä½æ•°
+    int m_iLineSize;//å›¾åƒæ¯è¡Œçš„å­—èŠ‚æ•°
+    RGBQUAD* m_stColorTable;//é¢œè‰²è¡¨æŒ‡é’ˆ
+    unsigned char* m_szBmpBuf;//å›¾åƒæ•°æ®çš„æŒ‡é’ˆ
 
 private:
-    //Ë½ÓĞº¯Êı
+    //ç§æœ‰å‡½æ•°
 
 public:
 
 //----------------------------------------
-//»ù±¾º¯Êı
+//åŸºæœ¬å‡½æ•°
 
-    //¹¹Ôìº¯Êı
+    //æ„é€ å‡½æ•°
     CBmpHandler();
-    //Îö¹¹º¯Êı
+    //ææ„å‡½æ•°
     ~CBmpHandler();
-    //¼ÓÔØbmpÍ¼Æ¬
+    //åŠ è½½bmpå›¾ç‰‡
     bool loadBmp(char* szFileName);
-    //±£´æÍ¼Æ¬
+    //ä¿å­˜å›¾ç‰‡
     bool saveBmpAs(char* szFileName);
 
 //----------------------------------------
-//ÒÔÏÂÊÇÍ¼Ïñ´¦Àíº¯Êı£¬ĞÂ¹¦ÄÜÇëÔÚÏÂÃæÌí¼Ó
+//ä»¥ä¸‹æ˜¯å›¾åƒå¤„ç†å‡½æ•°ï¼Œæ–°åŠŸèƒ½è¯·åœ¨ä¸‹é¢æ·»åŠ 
 
-    //¸ü¸ÄÁÁ¶È£¬²ÎÊı·¶Î§-255~255
+    //æ›´æ”¹äº®åº¦ï¼Œå‚æ•°èŒƒå›´-255~255
     bool change_brightness(int iValue);
+	bool change_grey();
 
 };
 
