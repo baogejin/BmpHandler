@@ -8,6 +8,8 @@ CBmpHandler::CBmpHandler()
 //Îö¹¹º¯Êı
 CBmpHandler::~CBmpHandler()
 {
+    if(m_iBitCount == 8)delete []m_stColorTable;
+    delete []m_szBmpBuf;
 }
 
 //¼ÓÔØÍ¼Æ¬
