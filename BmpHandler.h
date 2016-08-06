@@ -42,7 +42,9 @@ public:
 
     //更改亮度，参数范围-255~255
     bool change_brightness(int iValue);
-	bool change_grey();
+
+    //将图片变成伪灰度图，像素位数不变，修改rgb值
+    bool change_grey();
 
 };
 

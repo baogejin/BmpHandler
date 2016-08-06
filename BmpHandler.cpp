@@ -113,12 +113,12 @@ bool CBmpHandler::change_brightness(int iValue)
     //参数超出范围
     if(iValue < -255 || iValue > 255)return false;
 
-    for(int i=0;i<m_iBmpHeight;i++)
+    for(int i=0; i<m_iBmpHeight; i++)
     {
-        for(int j=0;j<m_iBmpWidth;j++)
+        for(int j=0; j<m_iBmpWidth; j++)
         {
             //遍历所有像素
-            for(int k=0;k<3;k++)
+            for(int k=0; k<3; k++)
             {
                 //修改rgb值，用int临时变量防止越界
                 int iTmp = (int)m_szBmpBuf[i*m_iLineSize+j*3+k];
@@ -132,30 +132,31 @@ bool CBmpHandler::change_brightness(int iValue)
     return true;
 }
 
+//将图片变成伪灰度图
 bool CBmpHandler::change_grey(void)
 {
-	//没有图片资源
+    //没有图片资源
     if(!m_szBmpBuf)return false;
 
-	 for(int i=0;i<m_iBmpHeight;i++)
+    for(int i=0; i<m_iBmpHeight; i++)
     {
-        for(int j=0;j<m_iBmpWidth;j++)
+        for(int j=0; j<m_iBmpWidth; j++)
         {
-			int grey = 0;
             //遍历所有像素
-            for(int k=0;k<3;k++)
+            int iGrey = 0;
+            for(int k=0; k<3; k++)
             {
                 //修改rgb值，用int临时变量防止越界
                 int iTmp = (int)m_szBmpBuf[i*m_iLineSize+j*3+k];
-                grey += iTmp;
+                iGrey += iTmp;
             }
-			grey = grey/3;
-			for(int k=0;k<3;k++)
+            iGrey = iGrey/3;
+            for(int k=0; k<3; k++)
             {
                 //修改rgb值，用int临时变量防止越界
-                m_szBmpBuf[i*m_iLineSize+j*3+k] = (char)grey;
+                m_szBmpBuf[i*m_iLineSize+j*3+k] = (char)iGrey;
             }
         }
     }
-	return true;
+    return true;
 }
