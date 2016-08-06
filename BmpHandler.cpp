@@ -1,84 +1,84 @@
 #include "BmpHandler.h"
 
-//¹¹Ôìº¯Êı
+//æ„é€ å‡½æ•°
 CBmpHandler::CBmpHandler()
 {
 }
 
-//Îö¹¹º¯Êı
+//ææ„å‡½æ•°
 CBmpHandler::~CBmpHandler()
 {
     if(m_iBitCount == 8)delete []m_stColorTable;
     delete []m_szBmpBuf;
 }
 
-//¼ÓÔØÍ¼Æ¬
+//åŠ è½½å›¾ç‰‡
 bool CBmpHandler::loadBmp(char* szFileName)
 {
-    //´ò¿ªbmpÎÄ¼ş
+    //æ‰“å¼€bmpæ–‡ä»¶
     FILE *fp = fopen(szFileName, "rb");
 
-    //Ã»ÓĞ¶Áµ½£¬·µ»ØÊ§°Ü
+    //æ²¡æœ‰è¯»åˆ°ï¼Œè¿”å›å¤±è´¥
     if(!fp)return false;
 
-    //Ìø¹ıÎ»Í¼ÎÄ¼şÍ·½á¹¹ BITMAPFILEHEADER
-    fseek(fp, sizeof(BITMAPFILEHEADER), 0);//BITMAPFILEHEADERĞèÒªinclude<wingdi.h>
+    //è·³è¿‡ä½å›¾æ–‡ä»¶å¤´ç»“æ„ BITMAPFILEHEADER
+    fseek(fp, sizeof(BITMAPFILEHEADER), 0);//BITMAPFILEHEADERéœ€è¦include<wingdi.h>
 
-    //»ñÈ¡Í¼Æ¬ĞÅÏ¢½á¹¹ BITMAPINFOHEADER
+    //è·å–å›¾ç‰‡ä¿¡æ¯ç»“æ„ BITMAPINFOHEADER
     BITMAPINFOHEADER stInfoHeader;
     fread(&stInfoHeader, sizeof(BITMAPINFOHEADER), 1, fp);
 
-    //»ñÈ¡Í¼Ïñ¿í¡¢¸ß
+    //è·å–å›¾åƒå®½ã€é«˜
     m_iBmpWidth = stInfoHeader.biWidth;
     m_iBmpHeight = stInfoHeader.biHeight;
     int iSize = stInfoHeader.biSizeImage;
-    //»ñÈ¡Ã¿ÏñËØÎ»Êı£¬¼ÆËãÒ»ĞĞËùÕ¼×Ö½ÚÊı
+    //è·å–æ¯åƒç´ ä½æ•°ï¼Œè®¡ç®—ä¸€è¡Œæ‰€å å­—èŠ‚æ•°
     m_iBitCount = stInfoHeader.biBitCount;
-    m_iLineSize = (m_iBmpWidth*m_iBitCount/8+3)/4*4;//ÕâÀïÈ·±£ÁËÊÇ4µÄ±¶Êı
+    m_iLineSize = (m_iBmpWidth*m_iBitCount/8+3)/4*4;//è¿™é‡Œç¡®ä¿äº†æ˜¯4çš„å€æ•°
 
     if(m_iBitCount == 8)
     {
-        //ÊÇ»Ò¶ÈÍ¼Æ¬£¬ÉêÇëÑÕÉ«±íËùĞè¿Õ¼ä£¬¶ÁÑÕÉ«±í½øÄÚ´æ
+        //æ˜¯ç°åº¦å›¾ç‰‡ï¼Œç”³è¯·é¢œè‰²è¡¨æ‰€éœ€ç©ºé—´ï¼Œè¯»é¢œè‰²è¡¨è¿›å†…å­˜
         m_stColorTable = new RGBQUAD[256];
         fread(m_stColorTable, sizeof(RGBQUAD), 256, fp);
     }
 
-    //ÉêÇëÎ»Í¼Êı¾İËùĞè¿Õ¼ä£¬¶ÁÎ»Í¼Êı¾İ½øÄÚ´æ
+    //ç”³è¯·ä½å›¾æ•°æ®æ‰€éœ€ç©ºé—´ï¼Œè¯»ä½å›¾æ•°æ®è¿›å†…å­˜
     m_szBmpBuf = new unsigned char[m_iLineSize*m_iBmpHeight];
     fread(m_szBmpBuf, 1, m_iLineSize*m_iBmpHeight, fp);
 
-    //¹Ø±ÕÎÄ¼ş
+    //å…³é—­æ–‡ä»¶
     fclose(fp);
 
     return true;
 }
 
-//±£´æÍ¼Æ¬
+//ä¿å­˜å›¾ç‰‡
 bool CBmpHandler::saveBmpAs(char* szFileName)
 {
-    //Ã»ÓĞÍ¼ÏñÊı¾İ
+    //æ²¡æœ‰å›¾åƒæ•°æ®
     if(!m_szBmpBuf)return false;
 
-    //ÑÕÉ«±í´óĞ¡£¬ÒÔ×Ö½ÚÎªµ¥Î»£¬»Ò¶ÈÍ¼ÑÕÉ«±í´óĞ¡1024£¬²ÊÉ«Í¼Îª0
+    //é¢œè‰²è¡¨å¤§å°ï¼Œä»¥å­—èŠ‚ä¸ºå•ä½ï¼Œç°åº¦å›¾é¢œè‰²è¡¨å¤§å°1024ï¼Œå½©è‰²å›¾ä¸º0
     int iColorTableSize = 0;
     if(m_iBitCount == 8)iColorTableSize = 1024;
 
-    //ÒÔ¶ş½øÖÆĞ´µÄĞÎÊ½´ò¿ªÎÄ¼ş
+    //ä»¥äºŒè¿›åˆ¶å†™çš„å½¢å¼æ‰“å¼€æ–‡ä»¶
     FILE* fp = fopen(szFileName, "wb");
 
-    //´ò¿ªÎÄ¼şÊ§°Ü
+    //æ‰“å¼€æ–‡ä»¶å¤±è´¥
     if(!fp)return false;
 
-    //ÉêÇëÎ»Í¼ÎÄ¼şÍ·½á¹¹±äÁ¿£¬ÌîĞ´ÎÄ¼şÍ·ĞÅÏ¢
+    //ç”³è¯·ä½å›¾æ–‡ä»¶å¤´ç»“æ„å˜é‡ï¼Œå¡«å†™æ–‡ä»¶å¤´ä¿¡æ¯
     BITMAPFILEHEADER stFileHeader;
-    stFileHeader.bfType = 0x4D42;//bmpÀàĞÍ£¬ÎªÊ²Ã´Í·ÎÄ¼şÀïÃ»ÓĞºê¶¨Òå
-    stFileHeader.bfSize = sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER) + iColorTableSize + (m_iLineSize*m_iBmpHeight);//bfSizeÊÇ4¸ö²¿·ÖÖ®ºÍ
+    stFileHeader.bfType = 0x4D42;//bmpç±»å‹ï¼Œä¸ºä»€ä¹ˆå¤´æ–‡ä»¶é‡Œæ²¡æœ‰å®å®šä¹‰
+    stFileHeader.bfSize = sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER) + iColorTableSize + (m_iLineSize*m_iBmpHeight);//bfSizeæ˜¯4ä¸ªéƒ¨åˆ†ä¹‹å’Œ
     stFileHeader.bfReserved1 = 0;
     stFileHeader.bfReserved2 = 0;
-    stFileHeader.bfOffBits = sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER) + iColorTableSize;//bfOffBitsÊÇÇ°3²¿·ÖÖ®ºÍ
-    fwrite(&stFileHeader, sizeof(BITMAPFILEHEADER), 1, fp);//Ğ´ÎÄ¼şÍ·½øÎÄ¼ş
+    stFileHeader.bfOffBits = sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER) + iColorTableSize;//bfOffBitsæ˜¯å‰3éƒ¨åˆ†ä¹‹å’Œ
+    fwrite(&stFileHeader, sizeof(BITMAPFILEHEADER), 1, fp);//å†™æ–‡ä»¶å¤´è¿›æ–‡ä»¶
 
-    //ÉêÇëÎ»Í¼ĞÅÏ¢Í·½á¹¹±äÁ¿£¬ÌîĞ´ĞÅÏ¢Í·ĞÅÏ¢
+    //ç”³è¯·ä½å›¾ä¿¡æ¯å¤´ç»“æ„å˜é‡ï¼Œå¡«å†™ä¿¡æ¯å¤´ä¿¡æ¯
     BITMAPINFOHEADER stInfoHeader;
     stInfoHeader.biBitCount = m_iBitCount;
     stInfoHeader.biClrImportant = 0;
@@ -92,35 +92,35 @@ bool CBmpHandler::saveBmpAs(char* szFileName)
     stInfoHeader.biYPelsPerMeter = 0;
     fwrite(&stInfoHeader, sizeof(BITMAPINFOHEADER), 1, fp);
 
-    //Èç¹ûÊÇ»Ò¶ÈÍ¼£¬ÓĞÑÕÉ«±í£¬Ğ´ÈëÎÄ¼ş
+    //å¦‚æœæ˜¯ç°åº¦å›¾ï¼Œæœ‰é¢œè‰²è¡¨ï¼Œå†™å…¥æ–‡ä»¶
     if(m_iBitCount == 8)fwrite(m_stColorTable, sizeof(RGBQUAD), 256, fp);
 
-    //Ğ´Î»Í¼Êı¾İ½øÎÄ¼ş
+    //å†™ä½å›¾æ•°æ®è¿›æ–‡ä»¶
     fwrite(m_szBmpBuf, m_iLineSize*m_iBmpHeight, 1, fp);
 
-    //¹Ø±ÕÎÄ¼ş
+    //å…³é—­æ–‡ä»¶
     fclose(fp);
 
     return true;
 }
 
-//¸ü¸ÄÁÁ¶È£¬²ÎÊı·¶Î§-255~255
+//æ›´æ”¹äº®åº¦ï¼Œå‚æ•°èŒƒå›´-255~255
 bool CBmpHandler::change_brightness(int iValue)
 {
-    //Ã»ÓĞÍ¼Æ¬×ÊÔ´
+    //æ²¡æœ‰å›¾ç‰‡èµ„æº
     if(!m_szBmpBuf)return false;
 
-    //²ÎÊı³¬³ö·¶Î§
+    //å‚æ•°è¶…å‡ºèŒƒå›´
     if(iValue < -255 || iValue > 255)return false;
 
     for(int i=0;i<m_iBmpHeight;i++)
     {
         for(int j=0;j<m_iBmpWidth;j++)
         {
-            //±éÀúËùÓĞÏñËØ
+            //éå†æ‰€æœ‰åƒç´ 
             for(int k=0;k<3;k++)
             {
-                //ĞŞ¸ÄrgbÖµ£¬ÓÃintÁÙÊ±±äÁ¿·ÀÖ¹Ô½½ç
+                //ä¿®æ”¹rgbå€¼ï¼Œç”¨intä¸´æ—¶å˜é‡é˜²æ­¢è¶Šç•Œ
                 int iTmp = (int)m_szBmpBuf[i*m_iLineSize+j*3+k];
                 iTmp += iValue;
                 if(iTmp < 0)iTmp = 0;
@@ -130,4 +130,32 @@ bool CBmpHandler::change_brightness(int iValue)
         }
     }
     return true;
+}
+
+bool CBmpHandler::change_grey(void)
+{
+	//æ²¡æœ‰å›¾ç‰‡èµ„æº
+    if(!m_szBmpBuf)return false;
+
+	 for(int i=0;i<m_iBmpHeight;i++)
+    {
+        for(int j=0;j<m_iBmpWidth;j++)
+        {
+			int grey = 0;
+            //éå†æ‰€æœ‰åƒç´ 
+            for(int k=0;k<3;k++)
+            {
+                //ä¿®æ”¹rgbå€¼ï¼Œç”¨intä¸´æ—¶å˜é‡é˜²æ­¢è¶Šç•Œ
+                int iTmp = (int)m_szBmpBuf[i*m_iLineSize+j*3+k];
+                grey += iTmp;
+            }
+			grey = grey/3;
+			for(int k=0;k<3;k++)
+            {
+                //ä¿®æ”¹rgbå€¼ï¼Œç”¨intä¸´æ—¶å˜é‡é˜²æ­¢è¶Šç•Œ
+                m_szBmpBuf[i*m_iLineSize+j*3+k] = (char)grey;
+            }
+        }
+    }
+	return true;
 }
