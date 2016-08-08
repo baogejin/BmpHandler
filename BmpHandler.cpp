@@ -160,3 +160,51 @@ bool CBmpHandler::change_grey(void)
     }
     return true;
 }
+
+//将图片二值化，参数分别为阈值0~255，RGB各值
+bool CBmpHandler::binary_process(int iValue, int iRValue, int iGValue, int iBValue)
+{
+    //没有图片资源
+    if(!m_szBmpBuf)return false;
+
+    //参数的数值判断，避免越界
+    if(iValue > 255)iValue = 255;
+    if(iValue < 0)iValue = 0;
+    if(iRValue > 255)iRValue = 255;
+    if(iRValue < 0)iRValue = 0;
+    if(iGValue > 255)iGValue = 255;
+    if(iGValue < 0)iGValue = 0;
+    if(iBValue > 255)iBValue = 255;
+    if(iBValue < 0)iBValue = 0;
+
+    for(int i=0; i<m_iBmpHeight; i++)
+    {
+        for(int j=0; j<m_iBmpWidth; j++)
+        {
+            //遍历所有像素
+            int iSum = 0;
+            for(int k=0; k<3; k++)
+            {
+                //修改rgb值，用int临时变量防止越界
+                int iTmp = (int)m_szBmpBuf[i*m_iLineSize+j*3+k];
+                iSum += iTmp;
+            }
+
+            if(iSum < iValue*3)
+            {
+                //小于阈值
+                m_szBmpBuf[i*m_iLineSize+j*3] = iBValue;
+                m_szBmpBuf[i*m_iLineSize+j*3+1] = iGValue;
+                m_szBmpBuf[i*m_iLineSize+j*3+2] = iRValue;
+            }
+            else
+            {
+                //大于等于阈值
+                m_szBmpBuf[i*m_iLineSize+j*3] = 255;
+                m_szBmpBuf[i*m_iLineSize+j*3+1] = 255;
+                m_szBmpBuf[i*m_iLineSize+j*3+2] = 255;
+            }
+        }
+    }
+    return true;
+}

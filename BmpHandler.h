@@ -46,6 +46,9 @@ public:
     //将图片变成伪灰度图，像素位数不变，修改rgb值
     bool change_grey();
 
+    //将图片二值化，参数分别为阈值0~255，RGB各值
+    bool binary_process(int iValue, int iRValue=0, int iGValue=0, int iBValue=0);
+
 };
 
 #endif // BMPHANDLER_H_INCLUDED
